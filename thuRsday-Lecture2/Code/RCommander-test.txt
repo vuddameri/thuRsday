@@ -1,0 +1,16 @@
+
+setwd("/home/vuddameri/MathWorkshop/thuRsday-Lecture2/Data")
+with(a, Hist(PPTIN, scale="frequency", breaks="Sturges", col="darkgray"))
+with(a, Hist(PPTIN, scale="frequency", breaks="Sturges", col="darkgray"))
+with(a, Hist(PPTIN, scale="frequency", breaks="Sturges", col="darkgray"))
+Boxplot( ~ TMEANF, data=a, id=list(method="y"))
+Boxplot( ~ TMINF, data=a, id=list(method="y"))
+library(abind, pos=25)
+library(e1071, pos=26)
+numSummary(a[,c("PPTIN", "TMAXF", "TMINF"), drop=FALSE], 
+  statistics=c("mean", "sd", "IQR", "quantiles"), quantiles=c(0,.25,.5,.75,1))
+RegModel.1 <- lm(TDMEAN~SOLRAD+VPDMAXHPA, data=a)
+summary(RegModel.1)
+scatterplotMatrix(~PPTIN+SOLRAD+TDMEAN+TMAXF+TMEANF+TMINF, regLine=FALSE, 
+  smooth=FALSE, diagonal=list(method="density"), data=a)
+

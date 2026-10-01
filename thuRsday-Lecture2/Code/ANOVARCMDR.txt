@@ -1,0 +1,76 @@
+
+Dataset <- 
+  read.table("/home/vuddameri/MathWorkshop/thuRsday-Lecture2/Data/SanAntonioACS.csv",
+   header=TRUE, stringsAsFactors=TRUE, sep=",", na.strings="NA", dec=".", 
+  strip.white=TRUE)
+with(Dataset, Hist(HousingUnits, scale="frequency", breaks="Sturges", 
+  col="darkgray"))
+Dataset$PctEdu <- with(Dataset, (Bachelors + Doctorate Masters+ 
+  Professional)/ Education25Plus)
+Dataset$PctEdu <- with(Dataset, (Bachelors + Doctorate Masters+ 
+  Professional)/ Education25Plus)
+library(abind, pos=17)
+library(e1071, pos=18)
+names(Dataset)
+
+fix(Dataset)
+Dataset$PctEdu <- with(Dataset, (Bachelors+ Doctorate+ Masters+ 
+  Professional)*100/ Education25Plus)
+Dataset$PctEdu <- with(Dataset, (Bachelors+ Doctorate+ Masters+ 
+  Professional)*100/ Education25Plus)
+numSummary(Dataset[,c("PctEdu", "PovertyRate"), drop=FALSE], 
+  statistics=c("mean", "sd", "IQR", "quantiles"), quantiles=c(0,.25,.5,.75,1))
+numSummary(Dataset[,c("PctEdu", "PovertyRate"), drop=FALSE], 
+  statistics=c("mean", "sd", "IQR", "quantiles"), quantiles=c(0,.25,.5,.75,1))
+RegModel.1 <- lm(PovertyRate~PctEdu, data=Dataset)
+summary(RegModel.1)
+RegModel.2 <- lm(PovertyRate~PctEdu, data=Dataset)
+summary(RegModel.2)
+scatterplot(PovertyRate~PctEdu, regLine=FALSE, smooth=FALSE, boxplots=FALSE,
+   data=Dataset)
+scatterplot(PovertyRate~PctEdu, regLine=FALSE, smooth=FALSE, boxplots=FALSE,
+   data=Dataset)
+Dataset <- within(Dataset, {
+  Incomegroups <- Recode(MedIncome, 
+  'lo:30000 = "Low";; 30000:120000 = "Medium";; 120000:hi = "High"', 
+  as.factor=TRUE, to.value="=", interval=":", separator=";")
+})
+Dataset <- within(Dataset, {
+  Incomegroups <- Recode(MedIncome, 
+  'lo:30000 = "Low";; 30000:120000 = "Medium";; 120000:hi = "High";', 
+  as.factor=TRUE, to.value="=", interval=":", separator=";")
+})
+library(mvtnorm, pos=19)
+library(survival, pos=19)
+library(MASS, pos=19)
+library(TH.data, pos=19)
+library(multcomp, pos=19)
+AnovaModel.3 <- aov(PctEdu ~ Incomegroups, data=Dataset)
+summary(AnovaModel.3)
+with(Dataset, numSummary(PctEdu, groups=Incomegroups, statistics=c("mean", 
+  "sd")))
+local({
+  .Pairs <- glht(AnovaModel.3, linfct = mcp(Incomegroups = "Tukey"))
+  print(summary(.Pairs)) # pairwise tests
+  print(confint(.Pairs, level=0.95)) # confidence intervals
+  print(cld(.Pairs, level=0.05)) # compact letter display
+  old.oma <- par(oma=c(0, 5, 0, 0))
+  plot(confint(.Pairs))
+  par(old.oma)
+})
+oneway.test(PctEdu ~ Incomegroups, data=Dataset) # Welch test
+AnovaModel.4 <- aov(PctEdu ~ Incomegroups, data=Dataset)
+summary(AnovaModel.4)
+with(Dataset, numSummary(PctEdu, groups=Incomegroups, statistics=c("mean", 
+  "sd")))
+local({
+  .Pairs <- glht(AnovaModel.4, linfct = mcp(Incomegroups = "Tukey"))
+  print(summary(.Pairs)) # pairwise tests
+  print(confint(.Pairs, level=0.95)) # confidence intervals
+  print(cld(.Pairs, level=0.05)) # compact letter display
+  old.oma <- par(oma=c(0, 5, 0, 0))
+  plot(confint(.Pairs))
+  par(old.oma)
+})
+oneway.test(PctEdu ~ Incomegroups, data=Dataset) # Welch test
+
